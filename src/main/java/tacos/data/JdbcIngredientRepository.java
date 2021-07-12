@@ -7,7 +7,8 @@ import tacos.Ingredient;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
+/*
+ * JDBC 활용 시 사용 (JPA 이용시 사용 X)
 @Repository
 public class JdbcIngredientRepository implements IngredientRepository{
 
@@ -48,3 +49,4 @@ public class JdbcIngredientRepository implements IngredientRepository{
     }
 
 }
+*/

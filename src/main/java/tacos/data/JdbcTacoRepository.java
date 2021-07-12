@@ -13,7 +13,8 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Arrays;
 import java.util.Date;
-
+/*
+ * JDBC 활용 시 사용 (JPA 이용시 사용 X)
 @Repository
 public class JdbcTacoRepository implements TacoRepository{
 
@@ -63,3 +64,4 @@ public class JdbcTacoRepository implements TacoRepository{
     }
 
 }
+*/

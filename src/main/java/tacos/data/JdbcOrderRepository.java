@@ -11,7 +11,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+/*
+ * JDBC 활용 시 사용 (JPA 이용시 사용 X)
 @Repository
 public class JdbcOrderRepository implements OrderRepository{
     private SimpleJdbcInsert orderInserter;
@@ -63,3 +64,4 @@ public class JdbcOrderRepository implements OrderRepository{
         orderTacoInserter.execute(values);
     }
 }
+*/

@@ -1,12 +1,15 @@
 package tacos.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.sql.DataSource;
 
@@ -16,6 +19,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     DataSource dataSource;
+    @Autowired
+    private UserDetailsService userDetailsService;
+
+    @Bean
+    public PasswordEncoder encoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -25,9 +35,28 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .access("hasRole('ROLE_USER')")
                     .antMatchers("/", "/**").access("permitAll")
                 .and()
-                    .httpBasic()
+                    .formLogin()
+                    .loginPage("/login")
+                    .defaultSuccessUrl("/design")
+                .and()
+                    .logout()
+                    .logoutSuccessUrl("/")
+                .and()
+                    .csrf()
+                    .ignoringAntMatchers("/h2-console/**")
+//                    .disable()
         ;
     }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(encoder())
+        ;
+    }
+
+
 /*
  * InMemory 기반 인증 방식
  * 장점 : 테스트 목적이나 간단한 애플리케이션에는 편하다
@@ -47,6 +76,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
     */
 
+    /*
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
@@ -61,4 +91,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(new NoEncodingPasswordEncoder())
         ;
     }
+    */
+
 }

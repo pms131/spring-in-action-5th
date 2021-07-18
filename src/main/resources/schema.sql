@@ -1,5 +1,5 @@
-drop table if exists users;
 drop table if exists authorities;
+drop table if exists users;
 drop table if exists ix_auth_username;
 
 create table if not exists users(

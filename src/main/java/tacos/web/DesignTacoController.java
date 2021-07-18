@@ -1,8 +1,10 @@
 package tacos.web;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
@@ -19,12 +21,14 @@ import javax.validation.Valid;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Controller
-@RequestMapping("/design")
+@RestController
+@RequestMapping(value = "/design", produces = "application/json")
 @SessionAttributes("order")
+@CrossOrigin(origins = "*")
 public class DesignTacoController {
 
     private final IngredientRepository ingredientRepo;
@@ -36,9 +40,6 @@ public class DesignTacoController {
         this.tacoRepo = tacoRepo;
         this.userRepo = userRepo;
     }
-
-    @Autowired
-
 
     @ModelAttribute(name = "order")
     public Order order() {
@@ -96,6 +97,27 @@ public class DesignTacoController {
 
         return "redirect:/orders/current";
 
+    }
+
+    @GetMapping("/recent")
+    public Iterable<Taco> recentTacos() {
+        PageRequest page = PageRequest.of(
+                0, 12, Sort.by("createdAt").descending());
+
+        return tacoRepo.findAll(page).getContent();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Taco> tacoById(@PathVariable("id") Long id) {
+        Optional<Taco> optTaco = tacoRepo.findById(id);
+        return optTaco.map(taco -> new ResponseEntity<>(taco, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
+    }
+
+    @PostMapping(consumes = "application/json")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Taco postTaco(@RequestBody Taco taco) {
+        return tacoRepo.save(taco);
     }
 
     private List<Ingredient> filterByType(List<Ingredient> ingredients, Type type) {

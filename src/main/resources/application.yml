@@ -54,3 +54,10 @@ spring:
       on-profile: "common"
   thymeleaf:
     cache: false
+  artemis:
+    broker-url: artemis.tacocloud.com:61617
+    user: tacoweb
+    password: l3tm31n
+  jms:
+    template:
+      default-destination: tacocloud.order.queue

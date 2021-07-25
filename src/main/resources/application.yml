@@ -29,6 +29,13 @@ spring:
   config:
     activate:
       on-profile: "testdb"
+  kafka:
+    bootstrap-servers:
+      - kafka.tacocloud.com:9092
+      - kafka.tacocloud.com:9093
+      - kafka.tacocloud.com:9094
+    template:
+      default-topic: tacocloud.orders.topic
 logging:
   level:
     tacos: DEBUG
